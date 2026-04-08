@@ -1,4 +1,6 @@
 # simple-rsa-implementation
 
 ## How to run
-`python3 rsa.py`
+1. `python3 rsa.py`
+2. input message to be encrypted/decrypted
+3. enjoy
