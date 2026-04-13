@@ -1,9 +1,9 @@
-# sources: https://crypto.stackexchange.com/questions/13166/method-to-calculating-e-in-rsa, https://docs.python.org/3/library/random.html
-import random
-import math
+# sources: https://crypto.stackexchange.com/questions/13166/method-to-calculating-e-in-rsa, Gemini 3 Flash: "what value should my e be in rsa?" "how to efficiently calculate primes" "python how to convert letter to number", https://stackoverflow.com/a/8884226, https://realpython.com/ref/builtin-functions/pow/, https://docs.python.org/3/library/random.html
+
+import math # import this module for square root function
+import random # import this module to generate random numbers
 
 def is_prime(n):
-    # check if the number is less than 2
     if n < 2:
         return False
     # check for factors from 2 to the square root of n
@@ -12,26 +12,30 @@ def is_prime(n):
             return False
     return True
 
-def get_random_prime(nbits):
+def get_random_prime(bits):
     while True:
-        # Generate a random number with nbits
-        p = random.getrandbits(nbits)
-        
+        # Generate a random number that is nbits long
+        p = random.getrandbits(bits)
+        # make sure the number is odd, since even numbers > than 2 cannot be prime
+        if p % 2 == 0:
+            p += 1
+        # only return the number if it is prime
         if is_prime(p):
             return p
 
-# generate two random prime numbers p and q that are _
 def generate_random_primes():
-    p = get_random_prime(20)
-    q = get_random_prime(20)
+    # choose 19 bits as the length of the prime number to ensure p,q are less than 1,000,000
+    p = get_random_prime(19)
+    q = get_random_prime(19)
     # make sure p and q are not the same number
     while p == q:
-        q = get_random_prime(20)
+        q = get_random_prime(19)
     return p, q  
 
 # encrypt the message using the public key (e, n)
 def rsa_encrypt(message, e, n):
      cipher_text = []
+     # for each character in the message, calculate the cipher text using provided formula in slides
      for char in message:
         cipher_text.append(pow(ord(char), e, n))
      return cipher_text
@@ -39,6 +43,7 @@ def rsa_encrypt(message, e, n):
 # decrypt the cipher text using the private key (d, n)
 def rsa_decrypt(cipher_text, d, n):
     decrypted_message = ""
+    # for each character in the cipher text, calculate the original character using provided formula in slides
     for char in cipher_text:
         decrypted_message += chr(pow(char, d, n))
     return decrypted_message
